@@ -1,0 +1,29 @@
+#!/usr/bin/env zsh
+set -euo pipefail
+
+OLLAMA_URL="http://localhost:11434/api/generate"
+MODEL="llama3:instruct"
+PROMPT_PREFIX="Rewrite this sentence to be smoother and more natural. The final response should be the updated sentence only and should NOT include any prefatory text: "
+
+# Read selected text from stdin
+TEXT="$(cat -)" || TEXT=""
+TEXT="${TEXT%%$'\n'}"
+TEXT="$(printf "%s" "$TEXT" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+
+if [ -z "$TEXT" ]; then
+  exit 0
+fi
+
+REQ="$(jq -nc --arg model "$MODEL" --arg prompt "${PROMPT_PREFIX}${TEXT}" '{model:$model, prompt:$prompt}')"
+
+RESP="$(curl -s -X POST "$OLLAMA_URL" -H "Content-Type: application/json" -d "$REQ" 2>/dev/null || true)"
+
+if command -v jq >/dev/null 2>&1; then
+  OUT="$(printf "%s" "$RESP" | jq -s -r 'map(.response // .text // .output // .message // (.choices[0].text // "")) | join("")' 2>/dev/null || true)"
+else
+  OUT="$RESP"
+fi
+
+OUT="$(printf "%s" "$OUT" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+
+printf "%s" "$OUT"
