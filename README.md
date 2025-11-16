@@ -1,3 +1,8 @@
+
+![License](https://img.shields.io/badge/License-MIT-green.svg)
+![Platform](https://img.shields.io/badge/macOS-Hammerspoon-blue)
+![Model](https://img.shields.io/badge/Ollama-Llama3-orange)
+
 # Rewrite With Ollama
 
 A macOS automation workflow that rewrites selected text using a locally running Ollama LLM model. Select any text, trigger a hotkey (or double-tap modifier), and the rewritten text is automatically pasted back in place — with a polished “AI is thinking…” overlay and safe clipboard restoration.
@@ -54,9 +59,9 @@ rewrite-with-ollama/
   ```bash
   ollama pull llama3:instruct
 
-	•	jq (optional but recommended)
-
-brew install jq
+- **jq** (optional but recommended)
+  ```bash
+  brew install jq
 
 
 
