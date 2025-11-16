@@ -1,191 +1,230 @@
-
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 ![Platform](https://img.shields.io/badge/macOS-Hammerspoon-blue)
 ![Model](https://img.shields.io/badge/Ollama-Llama3-orange)
 
 # Rewrite With Ollama
 
-A macOS automation workflow that rewrites selected text using a locally running Ollama LLM model. Select any text, trigger a hotkey (or double-tap modifier), and the rewritten text is automatically pasted back in place — with a polished “AI is thinking…” overlay and safe clipboard restoration.
+A macOS automation workflow that leverages locally-running Ollama LLM models to intelligently rewrite selected text. This tool provides seamless text enhancement through a single keyboard gesture, featuring an elegant user interface and robust clipboard management.
 
-## 🚀 Overview
+## Overview
 
-This project integrates:
+Rewrite With Ollama integrates three powerful technologies to deliver a streamlined text rewriting experience:
 
-- **Hammerspoon** (macOS automation framework)
-- **Ollama** (local LLM server)
-- **A lightweight ZSH wrapper script**
+- **Hammerspoon** - Advanced macOS automation framework
+- **Ollama** - Local LLM inference server
+- **Custom ZSH Script** - Lightweight wrapper for efficient API communication
 
-Together, they let you rewrite any selected text using a local Llama model (or any model supported by Ollama) using a single keyboard gesture.
+This solution enables you to rewrite any selected text using locally-hosted language models (such as Llama 3 or any Ollama-supported model) through a simple keyboard shortcut.
 
-### What it does
+### Features
 
-1. Detects the trigger (Cmd + Shift + Y or double-tap Option/Cmd)  
-2. Copies current selection  
-3. Sends the text to Ollama’s REST API  
-4. Waits for the rewritten result  
-5. Pastes the rewritten text automatically  
-6. Restores your clipboard  
-7. Shows a polished floating banner while the AI is thinking  
-
-No cloud services. All processing is local.
+1. **Hotkey Activation** - Trigger via `Cmd + Shift + Y` or double-tap modifier keys (Option/Cmd)
+2. **Automatic Text Capture** - Intelligently copies the current selection
+3. **Local LLM Processing** - Sends text to Ollama's REST API for rewriting
+4. **Seamless Integration** - Automatically pastes the rewritten text in place
+5. **Clipboard Preservation** - Restores your original clipboard content
+6. **Visual Feedback** - Displays an elegant "AI is thinking..." overlay during processing
+7. **Privacy-First** - All processing occurs locally with no cloud services
 
 ---
 
-## 🧩 Repository Structure
+## Repository Structure
 
+```
 rewrite-with-ollama/
-├─ bin/
-│  └─ rewrite-with-ollama       # ZSH script executed by Hammerspoon
-├─ hammerspoon/
-│  └─ init.lua                  # Full Hammerspoon automation config
-├─ .github/
-│  └─ workflows/                # (optional) CI scripts
-├─ README.md
-├─ LICENSE
-└─ .gitignore
+├── bin/
+│   └── rewrite-with-ollama    # ZSH script executed by Hammerspoon
+├── hammerspoon/
+│   └── init.lua                # Hammerspoon automation configuration
+├── .github/
+│   └── workflows/              # CI/CD workflows (optional)
+├── README.md
+└── LICENSE
+```
 
 ---
 
-## 📦 Requirements
+## Prerequisites
 
-- **macOS**
-- **Hammerspoon**  
-  Install from: https://www.hammerspoon.org
-- **Ollama**  
-  Install from: https://github.com/ollama/ollama  
-  Must be running so the API is available at:  
-  `http://localhost:11434/api/generate`
-- **A compatible model**, e.g.:  
-  ```bash
-  ollama pull llama3:instruct
+### Required Software
 
-- **jq** (optional but recommended)
-  ```bash
-  brew install jq
+1. **macOS** - This tool is designed specifically for macOS
+2. **Hammerspoon** - Free automation framework for macOS
+   - Download: [https://www.hammerspoon.org/](https://www.hammerspoon.org/)
+3. **Ollama** - Local LLM server
+   - Installation: `brew install ollama`
+   - Documentation: [https://ollama.ai/](https://ollama.ai/)
 
+### Model Setup
 
+Ensure you have downloaded your preferred language model:
 
-⸻
+```bash
+ollama pull llama3
+```
 
-⚙️ Installation
+Verify Ollama is running:
 
-1. Clone the project
+```bash
+ollama serve
+```
 
+---
+
+## Installation
+
+### 1. Clone the Repository
+
+```bash
 git clone https://github.com/sailwadhwani/rewrite-with-ollama.git
 cd rewrite-with-ollama
+```
 
-2. Make the rewrite script executable
+### 2. Install the ZSH Script
 
-chmod +x bin/rewrite-with-ollama
+Copy the script to your local bin directory and make it executable:
 
-(Optional) Install it into your user bin:
-
-mkdir -p ~/bin
+```bash
 cp bin/rewrite-with-ollama ~/bin/rewrite-with-ollama
 chmod +x ~/bin/rewrite-with-ollama
+```
 
-3. Update SCRIPT_PATH in hammerspoon/init.lua
+Ensure `~/bin` is in your PATH, or adjust the path in the Hammerspoon configuration.
 
-Set it to match where the script is stored, e.g.:
+### 3. Configure Hammerspoon
 
-local SCRIPT_PATH = os.getenv("HOME") .. "/bin/rewrite-with-ollama"
+Copy the Hammerspoon configuration to your Hammerspoon directory:
 
-4. Reload Hammerspoon
+```bash
+cp hammerspoon/init.lua ~/.hammerspoon/init.lua
+```
 
-Open the Hammerspoon menu → Reload Config, or run:
+Alternatively, if you already have a Hammerspoon configuration, append the contents to your existing `init.lua` file.
 
-hs.reload()
+### 4. Reload Hammerspoon
 
-5. Allow Accessibility permissions
+Open Hammerspoon and click "Reload Config" from the menu bar icon, or press the configured reload hotkey.
 
-macOS → Settings → Privacy & Security → Accessibility → Enable Hammerspoon
+---
 
-⸻
+## Usage
 
-🖥️ Usage
-	1.	Select any text (email, document, browser, code, etc.)
-	2.	Trigger the rewrite:
-	•	Cmd + Shift + Y, or
-	•	Double-tap Option (Alt) (default enabled), or
-	•	Double-tap Command (if enabled)
-	3.	A floating banner appears: “AI is thinking…”
-	4.	The rewritten text is pasted automatically
-	5.	Your clipboard is restored to its original value
+### Basic Operation
 
-⸻
+1. **Select Text** - Highlight any text in any application
+2. **Activate** - Press `Cmd + Shift + Y` or double-tap your configured modifier key
+3. **Wait** - Observe the "AI is thinking..." overlay while processing
+4. **Review** - The rewritten text is automatically pasted in place
 
-🛠 Configuration
+### Customization
 
-Edit the top of hammerspoon/init.lua:
+Edit `~/.hammerspoon/init.lua` to customize:
 
-Setting	Description	Default
-hotModifiers	Hotkey modifier keys	{ "cmd", "shift" }
-hotKey	Hotkey trigger key	"Y"
-DOUBLE_CMD_ENABLE	Enable double-tap Cmd	false
-DOUBLE_OPT_ENABLE	Enable double-tap Option	true
-DOUBLE_INTERVAL	Max time between taps (sec)	0.30
-TASK_TIMEOUT	Timeout for Ollama request	45 sec
-SCRIPT_PATH	Path to ZSH rewrite script	~/bin/rewrite-with-ollama
+- **Hotkey combination** - Change the keyboard shortcut
+- **Model selection** - Specify a different Ollama model
+- **System prompt** - Modify the rewriting instructions
+- **Modifier tap** - Configure double-tap behavior
 
+---
 
-⸻
+## Configuration
 
-📄 Example
+### Changing the LLM Model
 
-Original text:
+Edit the `rewrite-with-ollama` script to use a different model:
 
-“I have checked the data and it seems okay but maybe verify again.”
+```bash
+# Default: llama3
+# Change to: codellama, mistral, neural-chat, etc.
+MODEL="llama3"
+```
 
-Rewritten:
+### Adjusting the System Prompt
 
-“I’ve reviewed the data and it looks right, but we should double-check to be sure.”
+Modify the prompt to change rewriting behavior:
 
-⸻
+```lua
+-- Example: Make text more concise
+prompt = "Rewrite the following text to be more concise and professional:"
 
-🧰 Troubleshooting
+-- Example: Improve grammar only
+prompt = "Fix grammar and spelling in the following text:"
+```
 
-“Rewrite failed”
-	•	Ollama is not running
-Start it:
+---
 
-ollama serve
+## Troubleshooting
 
+### No Rewrite Occurs
 
-	•	Wrong model name
-Make sure the model is installed:
+**Potential Causes:**
+- Hammerspoon may not have Accessibility permissions
+- Another application might be intercepting the same hotkey
+- Check the Hammerspoon console for errors
 
-ollama pull llama3:instruct
+**Solutions:**
+1. Grant Accessibility permissions: `System Settings > Privacy & Security > Accessibility`
+2. Try an alternative hotkey combination
+3. Open Hammerspoon Console (`⌘ + Shift + C`) to view error messages
 
+### Script Produces No Output
 
+**Potential Causes:**
+- Ollama server is not running
+- Model is not downloaded
+- Script path is incorrect
 
-No rewrite happens
-	•	Hammerspoon may not have Accessibility permissions
-	•	Another app might be using the same hotkey
-	•	Check Hammerspoon console for errors
+**Solutions:**
+1. Start Ollama: `ollama serve`
+2. Download model: `ollama pull llama3`
+3. Verify script path in Hammerspoon configuration
 
-Script produces no output
+### Testing Manually
 
-Test it manually:
+Test the script independently:
 
+```bash
 echo "Rewrite this sentence." | ~/bin/rewrite-with-ollama
+```
 
+---
 
-⸻
+## Contributing
 
-🤝 Contributing
+Contributions are welcome and appreciated! We're looking for help with:
 
-Contributions are welcome!
+### Feature Ideas
 
-Ideas:
-	•	Add modes: Shorten, Expand, Summarize, Translate
-	•	Add user-selectable prompts in a floating Hammerspoon UI
-	•	Add unit tests or linting (shellcheck)
-	•	Improve banner animations
+- Additional modes: Shorten, Expand, Summarize, Translate
+- User-selectable prompts via floating Hammerspoon UI
+- Unit tests and linting (shellcheck)
+- Enhanced banner animations and visual feedback
 
-Please open issues or submit pull requests.
+### How to Contribute
 
-⸻
+Please open an issue to discuss proposed changes or submit a pull request with your improvements.
 
-📜 License
+---
 
-This project is licensed under the MIT License.
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+---
+
+## Acknowledgments
+
+Built with:
+- [Hammerspoon](https://www.hammerspoon.org/) - Automation framework
+- [Ollama](https://ollama.ai/) - Local LLM inference
+- [Llama 3](https://ai.meta.com/llama/) - Language model
+
+---
+
+## Support
+
+If you encounter issues or have questions:
+
+- Open an [issue](https://github.com/sailwadhwani/rewrite-with-ollama/issues)
+- Check existing issues for similar problems
+- Include error messages and system information when reporting bugs
